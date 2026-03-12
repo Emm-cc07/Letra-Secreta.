@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Descubre la letra secreta</title>
+
+<style>
+
+body{
+font-family:Arial;
+background-image:url("https://images.unsplash.com/photo-1526045612212-70caf35c14df");
+background-size:cover;
+background-position:center;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+text-align:center;
+}
+
+.card{
+background:rgba(0,0,0,0.7);
+padding:30px;
+border-radius:20px;
+width:400px;
+}
+
+.progressbar{
+width:100%;
+height:20px;
+background:#333;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+.progress{
+height:100%;
+width:0%;
+background:#ff4d6d;
+transition:1s;
+}
+
+.car{
+font-size:30px;
+transition:1s;
+}
+
+button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.heart{
+font-size:25px;
+animation:pop 0.5s;
+}
+
+@keyframes pop{
+from{transform:scale(0)}
+to{transform:scale(1)}
+}
+
+.reveal{
+font-size:70px;
+animation:pulse 1s infinite alternate;
+}
+
+@keyframes pulse{
+from{transform:scale(1)}
+to{transform:scale(1.2)}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Ayuda a descubrir la letra 💌</h2>
+
+<div class="progressbar">
+<div id="bar" class="progress"></div>
+</div>
+
+<div id="car" class="car">🏎️</div>
+
+<p id="contador">0 / 20</p>
+
+<div id="corazones"></div>
+
+<h3 id="pregunta"></h3>
+
+<div id="respuestas"></div>
+
+</div>
+
+<script>
+
+let preguntas = [
+
+{
+q:"¿Cuál es el planeta más grande del sistema solar?",
+a:["Saturno","Júpiter","Neptuno","Marte"],
+c:1
+},
+
+{
+q:"¿Quién escribió 'La Odisea'?",
+a:["Homero","Sócrates","Virgilio","Platón"],
+c:0
+},
+
+{
+q:"¿Qué elemento químico tiene símbolo Au?",
+a:["Plata","Oro","Aluminio","Argón"],
+c:1
+},
+
+{
+q:"¿En qué país están las pirámides de Giza?",
+a:["México","Perú","Egipto","India"],
+c:2
+},
+
+{
+q:"¿Cuál es el océano más grande?",
+a:["Atlántico","Índico","Ártico","Pacífico"],
+c:3
+},
+
+{
+q:"¿Qué científico propuso la relatividad?",
+a:["Newton","Einstein","Tesla","Darwin"],
+c:1
+},
+
+{
+q:"¿Qué órgano bombea sangre?",
+a:["Pulmón","Corazón","Hígado","Riñón"],
+c:1
+},
+
+{
+q:"¿Capital de Japón?",
+a:["Seúl","Tokio","Kioto","Osaka"],
+c:1
+},
+
+{
+q:"¿Qué gas respiramos principalmente?",
+a:["Oxígeno","Nitrógeno","CO2","Helio"],
+c:1
+},
+
+{
+q:"¿Año de llegada del hombre a la luna?",
+a:["1965","1969","1972","1959"],
+c:1
+},
+
+{
+q:"¿Autor de Don Quijote?",
+a:["Cervantes","Lorca","Neruda","Borges"],
+c:0
+},
+
+{
+q:"¿Animal terrestre más rápido?",
+a:["León","Guepardo","Caballo","Tigre"],
+c:1
+},
+
+{
+q:"¿Lenguaje de la web?",
+a:["HTML","Python","C++","Java"],
+c:0
+},
+
+{
+q:"¿Cuántos continentes hay?",
+a:["5","6","7","8"],
+c:2
+},
+
+{
+q:"¿Planeta rojo?",
+a:["Marte","Venus","Mercurio","Júpiter"],
+c:0
+},
+
+{
+q:"¿Metal líquido?",
+a:["Mercurio","Hierro","Cobre","Plata"],
+c:0
+},
+
+{
+q:"¿Inventor del teléfono?",
+a:["Edison","Bell","Tesla","Newton"],
+c:1
+},
+
+{
+q:"¿Río más largo del mundo?",
+a:["Nilo","Amazonas","Yangtsé","Danubio"],
+c:1
+},
+
+{
+q:"¿País del Taj Mahal?",
+a:["India","Turquía","Irán","Pakistán"],
+c:0
+},
+
+{
+q:"¿Lengua más hablada?",
+a:["Inglés","Mandarín","Español","Hindi"],
+c:1
+}
+
+];
+
+let correctas = 0
+
+function cargar(){
+
+let p = preguntas[Math.floor(Math.random()*preguntas.length)]
+
+document.getElementById("pregunta").innerText=p.q
+
+let cont=document.getElementById("respuestas")
+cont.innerHTML=""
+
+p.a.forEach((r,i)=>{
+
+let b=document.createElement("button")
+b.innerText=r
+
+b.onclick=function(){
+
+if(i==p.c){
+
+correctas++
+
+let porcentaje=(correctas/20)*100
+
+document.getElementById("bar").style.width=porcentaje+"%"
+
+document.getElementById("contador").innerText=correctas+" / 20"
+
+document.getElementById("corazones").innerHTML+="❤️"
+
+if(correctas==20){
+
+document.body.innerHTML=
+"<h1>💌 La letra secreta es</h1><div class='reveal'>T</div>"
+
+}
+
+}else{
+
+alert("Respuesta incorrecta")
+
+}
+
+}
+
+cont.appendChild(b)
+
+})
+
+}
+
+cargar()
+
+</script>
+
+</body>
+</html>
