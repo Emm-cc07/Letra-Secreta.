@@ -96,7 +96,6 @@ to{transform:scale(1.2)}
 
 </div>
 
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -112,7 +111,7 @@ onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 
-// ================= FIREBASE =================
+// FIREBASE CONFIG
 
 const firebaseConfig = {
 apiKey: "TU_API_KEY",
@@ -129,7 +128,7 @@ const db = getFirestore(app);
 const ref = doc(db,"game","progress");
 
 
-// ================= PREGUNTAS =================
+// PREGUNTAS
 
 const preguntas=[
 
@@ -140,33 +139,33 @@ const preguntas=[
 {p:"¿Cuántos huesos tiene el cuerpo humano?",r:["206","210","180","150"],c:0},
 {p:"¿Qué país tiene forma de bota?",r:["España","Italia","Grecia","Portugal"],c:1},
 {p:"¿Océano más grande?",r:["Atlántico","Índico","Pacífico","Ártico"],c:2},
-{p:"Gas que respiramos?",r:["Nitrógeno","Oxígeno","CO2","Helio"],c:1},
-{p:"Teoría de relatividad?",r:["Newton","Einstein","Tesla","Bohr"],c:1},
-{p:"Río más largo?",r:["Amazonas","Nilo","Yangtsé","Misisipi"],c:0},
-{p:"Presión atmosférica?",r:["Barómetro","Termómetro","Higrómetro","Altímetro"],c:0},
-{p:"Continentes?",r:["5","6","7","8"],c:2},
-{p:"Metal líquido?",r:["Mercurio","Hierro","Cobre","Aluminio"],c:0},
-{p:"Órgano que bombea sangre?",r:["Pulmón","Cerebro","Corazón","Hígado"],c:2},
-{p:"Animal más grande?",r:["Elefante","Ballena azul","Tiburón","Jirafa"],c:1},
-{p:"Planeta rojo?",r:["Marte","Venus","Mercurio","Urano"],c:0},
-{p:"Idioma más hablado?",r:["Inglés","Español","Mandarín","Hindi"],c:2},
-{p:"Leyes del movimiento?",r:["Newton","Darwin","Galileo","Curie"],c:0},
-{p:"Produce insulina?",r:["Hígado","Páncreas","Riñón","Estómago"],c:1},
-{p:"País más grande?",r:["China","EEUU","Rusia","Canadá"],c:2}
+{p:"¿Gas que respiramos?",r:["Nitrógeno","Oxígeno","CO2","Helio"],c:1},
+{p:"¿Quién desarrolló la relatividad?",r:["Newton","Einstein","Tesla","Bohr"],c:1},
+{p:"¿Río más largo?",r:["Amazonas","Nilo","Yangtsé","Misisipi"],c:0},
+{p:"¿Instrumento presión atmosférica?",r:["Barómetro","Termómetro","Higrómetro","Altímetro"],c:0},
+{p:"¿Cuántos continentes?",r:["5","6","7","8"],c:2},
+{p:"¿Metal líquido?",r:["Mercurio","Hierro","Cobre","Aluminio"],c:0},
+{p:"¿Órgano que bombea sangre?",r:["Pulmón","Cerebro","Corazón","Hígado"],c:2},
+{p:"¿Animal más grande?",r:["Elefante","Ballena azul","Tiburón","Jirafa"],c:1},
+{p:"¿Planeta rojo?",r:["Marte","Venus","Mercurio","Urano"],c:0},
+{p:"¿Idioma más hablado?",r:["Inglés","Español","Mandarín","Hindi"],c:2},
+{p:"¿Leyes del movimiento?",r:["Newton","Darwin","Galileo","Curie"],c:0},
+{p:"¿Produce insulina?",r:["Hígado","Páncreas","Riñón","Estómago"],c:1},
+{p:"¿País más grande?",r:["China","EEUU","Rusia","Canadá"],c:2}
 
 ];
 
 
-// ================= ESTADO =================
+// ESTADO
 
-let progreso = 0;
-let respondio = localStorage.getItem("respondio") === "true";
+let progreso=0;
+let respondio = localStorage.getItem("respondio")==="true";
 
 const pregunta=document.getElementById("pregunta");
 const respuestas=document.getElementById("respuestas");
 
 
-// crear documento si no existe
+// INICIAR BASE DE DATOS
 
 async function iniciar(){
 
@@ -181,7 +180,7 @@ await setDoc(ref,{hearts:0});
 iniciar();
 
 
-// escuchar progreso global
+// ESCUCHAR PROGRESO
 
 onSnapshot(ref,(snap)=>{
 
@@ -194,7 +193,7 @@ actualizarUI();
 });
 
 
-// ================= UI =================
+// ACTUALIZAR UI
 
 function actualizarUI(){
 
@@ -205,7 +204,7 @@ document.getElementById("carro").style.transform="translateX("+porcentaje*3+"px)
 document.getElementById("corazones").innerText="❤️".repeat(progreso);
 
 
-// revelar letra SOLO si llega a 20
+// revelar letra solo al final
 
 if(progreso>=20){
 
@@ -217,7 +216,7 @@ return;
 }
 
 
-// bloquear si ya jugó
+// bloquear si ya respondió
 
 if(respondio){
 
@@ -237,7 +236,7 @@ mostrarPregunta();
 }
 
 
-// ================= PREGUNTA =================
+// MOSTRAR PREGUNTA
 
 function mostrarPregunta(){
 
@@ -249,17 +248,17 @@ respuestas.innerHTML="";
 
 p.r.forEach((resp,i)=>{
 
-let btn=document.createElement("button");
-btn.innerText=resp;
+let b=document.createElement("button");
+b.innerText=resp;
 
-btn.onclick=async()=>{
+b.onclick=async()=>{
 
 respondio=true;
 localStorage.setItem("respondio","true");
 
 if(i===p.c){
 
-pregunta.innerText="✅ Correcto";
+pregunta.innerText="✅ ¡Correcto!";
 await updateDoc(ref,{hearts:increment(1)});
 
 }else{
@@ -272,7 +271,7 @@ respuestas.innerHTML="Es turno del siguiente jugador.";
 
 };
 
-respuestas.appendChild(btn);
+respuestas.appendChild(b);
 
 });
 
