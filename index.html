@@ -95,9 +95,35 @@ to{transform:scale(1.2)}
 <div id="letraFinal"></div>
 
 </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
+<script>
+const preguntas=[
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAzmjRIpXs4xMHF1uItHFFgL9-Hczt-GAE",
+  authDomain: "letra-secreta.firebaseapp.com",
+  projectId: "letra-secreta",
+  storageBucket: "letra-secreta.firebasestorage.app",
+  messagingSenderId: "860652855979",
+  appId: "1:860652855979:web:87aa9a79ab5fb7ec774dee",
+  measurementId: "G-LND8XZVBQC"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const preguntas=[
 
 {p:"¿Quién escribió La Odisea?",r:["Homero","Platón","Aristóteles","Sócrates"],c:0},
