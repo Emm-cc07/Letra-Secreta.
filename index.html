@@ -96,34 +96,30 @@ to{transform:scale(1.2)}
 
 </div>
   
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-<script>
-  
 <script type="module">
 
-// imports firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import {
+  getFirestore,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  increment
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-// config
 const firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
+  apiKey: "TU_API_KEY",
+  authDomain: "letra-secreta.firebaseapp.com",
+  projectId: "letra-secreta"
 };
 
-// iniciar firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 🔥 AQUÍ SIGUE TODO TU CÓDIGO
-const preguntas = [
-  {p:"¿Quién escribió La Odisea?", r:["Homero","Platón"], c:0}
-];
+// ================= PREGUNTAS =================
   
-const preguntas=[
+const preguntas = [
 
 {p:"¿Quién escribió La Odisea?",r:["Homero","Platón","Aristóteles","Sócrates"],c:0},
 
