@@ -2,75 +2,71 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Descubre la letra secreta</title>
+<title>Descubre la letra</title>
 
 <style>
 
 body{
 font-family:Arial;
-background-image:url("https://images.unsplash.com/photo-1526045612212-70caf35c14df");
-background-size:cover;
-background-position:center;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-color:white;
 text-align:center;
+color:white;
+margin:0;
+padding:0;
+background:url("https://images.unsplash.com/photo-1526045612212-70caf35c14df") no-repeat center center fixed;
+background-size:cover;
 }
 
-.card{
-background:rgba(0,0,0,0.7);
+.contenedor{
+background:rgba(0,0,0,0.6);
 padding:30px;
+margin:50px auto;
+width:80%;
+max-width:600px;
 border-radius:20px;
-width:400px;
 }
 
-.progressbar{
+button{
+padding:12px;
+margin:8px;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.barra{
 width:100%;
-height:20px;
-background:#333;
+height:30px;
+background:#444;
 border-radius:20px;
 overflow:hidden;
-margin-bottom:20px;
+margin-top:20px;
 }
 
-.progress{
+.progreso{
 height:100%;
 width:0%;
 background:#ff4d6d;
 transition:1s;
 }
 
-.car{
-font-size:30px;
+.corazones{
+font-size:24px;
+margin-top:10px;
+}
+
+.carro{
+font-size:40px;
 transition:1s;
 }
 
-button{
-padding:10px;
-margin:5px;
-border:none;
-border-radius:10px;
-cursor:pointer;
+.letra{
+font-size:120px;
+margin-top:20px;
+animation:aparece 2s infinite alternate;
 }
 
-.heart{
-font-size:25px;
-animation:pop 0.5s;
-}
-
-@keyframes pop{
-from{transform:scale(0)}
-to{transform:scale(1)}
-}
-
-.reveal{
-font-size:70px;
-animation:pulse 1s infinite alternate;
-}
-
-@keyframes pulse{
+@keyframes aparece{
 from{transform:scale(1)}
 to{transform:scale(1.2)}
 }
@@ -80,204 +76,145 @@ to{transform:scale(1.2)}
 
 <body>
 
-<div class="card">
+<div class="contenedor">
 
-<h2>Ayuda a descubrir la letra 💌</h2>
+<h1>💌 Descubre la letra secreta</h1>
 
-<div class="progressbar">
-<div id="bar" class="progress"></div>
-</div>
-
-<div id="car" class="car">🏎️</div>
-
-<p id="contador">0 / 20</p>
-
-<div id="corazones"></div>
-
-<h3 id="pregunta"></h3>
+<p id="pregunta"></p>
 
 <div id="respuestas"></div>
+
+<div class="barra">
+<div id="barraProgreso" class="progreso"></div>
+</div>
+
+<div class="carro" id="carro">🏎️</div>
+
+<div class="corazones" id="corazones"></div>
+
+<div id="letraFinal"></div>
 
 </div>
 
 <script>
 
-let preguntas = [
+const preguntas=[
 
-{
-q:"¿Cuál es el planeta más grande del sistema solar?",
-a:["Saturno","Júpiter","Neptuno","Marte"],
-c:1
-},
+{p:"¿Quién escribió La Odisea?",r:["Homero","Platón","Aristóteles","Sócrates"],c:0},
 
-{
-q:"¿Quién escribió 'La Odisea'?",
-a:["Homero","Sócrates","Virgilio","Platón"],
-c:0
-},
+{p:"¿Cuál es el planeta más grande del sistema solar?",r:["Marte","Júpiter","Saturno","Neptuno"],c:1},
 
-{
-q:"¿Qué elemento químico tiene símbolo Au?",
-a:["Plata","Oro","Aluminio","Argón"],
-c:1
-},
+{p:"¿Qué elemento tiene el símbolo O?",r:["Oro","Osmio","Oxígeno","Plata"],c:2},
 
-{
-q:"¿En qué país están las pirámides de Giza?",
-a:["México","Perú","Egipto","India"],
-c:2
-},
+{p:"¿Quién pintó la Mona Lisa?",r:["Van Gogh","Da Vinci","Picasso","Rembrandt"],c:1},
 
-{
-q:"¿Cuál es el océano más grande?",
-a:["Atlántico","Índico","Ártico","Pacífico"],
-c:3
-},
+{p:"¿Cuántos huesos tiene el cuerpo humano adulto?",r:["206","210","180","150"],c:0},
 
-{
-q:"¿Qué científico propuso la relatividad?",
-a:["Newton","Einstein","Tesla","Darwin"],
-c:1
-},
+{p:"¿Qué país tiene forma de bota?",r:["España","Italia","Grecia","Portugal"],c:1},
 
-{
-q:"¿Qué órgano bombea sangre?",
-a:["Pulmón","Corazón","Hígado","Riñón"],
-c:1
-},
+{p:"¿Cuál es el océano más grande?",r:["Atlántico","Índico","Pacífico","Ártico"],c:2},
 
-{
-q:"¿Capital de Japón?",
-a:["Seúl","Tokio","Kioto","Osaka"],
-c:1
-},
+{p:"¿Qué gas respiramos principalmente?",r:["Nitrógeno","Oxígeno","CO2","Helio"],c:1},
 
-{
-q:"¿Qué gas respiramos principalmente?",
-a:["Oxígeno","Nitrógeno","CO2","Helio"],
-c:1
-},
+{p:"¿Quién desarrolló la teoría de la relatividad?",r:["Newton","Einstein","Tesla","Bohr"],c:1},
 
-{
-q:"¿Año de llegada del hombre a la luna?",
-a:["1965","1969","1972","1959"],
-c:1
-},
+{p:"¿Cuál es el río más largo del mundo?",r:["Amazonas","Nilo","Yangtsé","Misisipi"],c:0},
 
-{
-q:"¿Autor de Don Quijote?",
-a:["Cervantes","Lorca","Neruda","Borges"],
-c:0
-},
+{p:"¿Qué instrumento mide la presión atmosférica?",r:["Barómetro","Termómetro","Higrómetro","Altímetro"],c:0},
 
-{
-q:"¿Animal terrestre más rápido?",
-a:["León","Guepardo","Caballo","Tigre"],
-c:1
-},
+{p:"¿Cuántos continentes hay?",r:["5","6","7","8"],c:2},
 
-{
-q:"¿Lenguaje de la web?",
-a:["HTML","Python","C++","Java"],
-c:0
-},
+{p:"¿Qué metal es líquido a temperatura ambiente?",r:["Mercurio","Hierro","Cobre","Aluminio"],c:0},
 
-{
-q:"¿Cuántos continentes hay?",
-a:["5","6","7","8"],
-c:2
-},
+{p:"¿Qué órgano bombea la sangre?",r:["Pulmón","Cerebro","Corazón","Hígado"],c:2},
 
-{
-q:"¿Planeta rojo?",
-a:["Marte","Venus","Mercurio","Júpiter"],
-c:0
-},
+{p:"¿Qué animal es el más grande del planeta?",r:["Elefante","Ballena azul","Tiburón","Giraffa"],c:1},
 
-{
-q:"¿Metal líquido?",
-a:["Mercurio","Hierro","Cobre","Plata"],
-c:0
-},
+{p:"¿Qué planeta es conocido como planeta rojo?",r:["Marte","Venus","Mercurio","Urano"],c:0},
 
-{
-q:"¿Inventor del teléfono?",
-a:["Edison","Bell","Tesla","Newton"],
-c:1
-},
+{p:"¿Cuál es el idioma más hablado del mundo?",r:["Inglés","Español","Mandarín","Hindi"],c:2},
 
-{
-q:"¿Río más largo del mundo?",
-a:["Nilo","Amazonas","Yangtsé","Danubio"],
-c:1
-},
+{p:"¿Qué científico formuló las leyes del movimiento?",r:["Newton","Darwin","Galileo","Curie"],c:0},
 
-{
-q:"¿País del Taj Mahal?",
-a:["India","Turquía","Irán","Pakistán"],
-c:0
-},
+{p:"¿Qué órgano produce insulina?",r:["Hígado","Páncreas","Riñón","Estómago"],c:1},
 
-{
-q:"¿Lengua más hablada?",
-a:["Inglés","Mandarín","Español","Hindi"],
-c:1
-}
+{p:"¿Cuál es el país más grande del mundo?",r:["China","EEUU","Rusia","Canadá"],c:2}
 
-];
+]
 
-let correctas = 0
+let respondio=localStorage.getItem("respondio")
+let progreso=localStorage.getItem("progreso")||0
+progreso=parseInt(progreso)
 
-function cargar(){
+const pregunta=document.getElementById("pregunta")
+const respuestas=document.getElementById("respuestas")
 
-let p = preguntas[Math.floor(Math.random()*preguntas.length)]
+function actualizarUI(){
 
-document.getElementById("pregunta").innerText=p.q
+let porcentaje=(progreso/20)*100
+document.getElementById("barraProgreso").style.width=porcentaje+"%"
 
-let cont=document.getElementById("respuestas")
-cont.innerHTML=""
+document.getElementById("carro").style.transform="translateX("+porcentaje*2+"px)"
 
-p.a.forEach((r,i)=>{
+document.getElementById("corazones").innerText="❤️".repeat(progreso)
 
-let b=document.createElement("button")
-b.innerText=r
+if(progreso>=20){
 
-b.onclick=function(){
+document.getElementById("letraFinal").innerHTML='<div class="letra">T</div>'
 
-if(i==p.c){
+pregunta.innerText="¡La letra secreta fue descubierta!"
 
-correctas++
-
-let porcentaje=(correctas/20)*100
-
-document.getElementById("bar").style.width=porcentaje+"%"
-
-document.getElementById("contador").innerText=correctas+" / 20"
-
-document.getElementById("corazones").innerHTML+="❤️"
-
-if(correctas==20){
-
-document.body.innerHTML=
-"<h1>💌 La letra secreta es</h1><div class='reveal'>T</div>"
+respuestas.innerHTML=""
 
 }
+
+}
+
+actualizarUI()
+
+if(respondio){
+
+pregunta.innerText="❤️ Gracias por participar"
+respuestas.innerHTML="Ahora espera a que los demás respondan."
 
 }else{
 
-alert("Respuesta incorrecta")
+let q=Math.floor(Math.random()*preguntas.length)
+let p=preguntas[q]
+
+pregunta.innerText=p.p
+
+p.r.forEach((resp,i)=>{
+
+let b=document.createElement("button")
+b.innerText=resp
+
+b.onclick=()=>{
+
+localStorage.setItem("respondio",true)
+
+if(i===p.c){
+
+progreso++
+localStorage.setItem("progreso",progreso)
+
+alert("¡Respuesta correcta! ❤️")
+
+}else{
+
+alert("Respuesta incorrecta 😅")
 
 }
 
+location.reload()
+
 }
 
-cont.appendChild(b)
+respuestas.appendChild(b)
 
 })
 
 }
-
-cargar()
 
 </script>
 
