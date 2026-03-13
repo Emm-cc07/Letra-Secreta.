@@ -96,29 +96,31 @@ to{transform:scale(1.2)}
 
 </div>
 
- <script type="module">
+
+<script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+
 import {
-  getFirestore,
-  doc,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-  increment,
-  getDoc
+getFirestore,
+doc,
+getDoc,
+setDoc,
+updateDoc,
+increment,
+onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+
+// ================= FIREBASE =================
+
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
-  authDomain: "letra-oculta.firebaseapp.com",
-  projectId: "letra-oculta",
-  storageBucket: "letra-oculta.firebasestorage.app",
-  messagingSenderId: "820749594635",
-  appId: "1:820749594635:web:..."
-};
-  authDomain: "letra-secreta.firebaseapp.com",
-  projectId: "letra-secreta"
+apiKey: "TU_API_KEY",
+authDomain: "letra-oculta.firebaseapp.com",
+projectId: "letra-oculta",
+storageBucket: "letra-oculta.firebasestorage.app",
+messagingSenderId: "820749594635",
+appId: "1:820749594635:web:10259acdb01122f25bd70e"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -126,6 +128,7 @@ const db = getFirestore(app);
 
 // referencia correcta
 const ref = doc(db,"game","progress");
+
 
 // ================= PREGUNTAS =================
 
@@ -154,6 +157,7 @@ const preguntas=[
 
 ];
 
+
 // ================= LÓGICA =================
 
 let respondio = localStorage.getItem("respondio");
@@ -162,17 +166,24 @@ let progreso = 0;
 const pregunta=document.getElementById("pregunta");
 const respuestas=document.getElementById("respuestas");
 
-// asegurarse de que el documento exista
-const init = async ()=>{
-  const snap = await getDoc(ref);
-  if(!snap.exists()){
-    await setDoc(ref,{hearts:0});
-  }
-};
 
-init();
+// crear documento si no existe
+
+async function iniciar(){
+
+const snap = await getDoc(ref);
+
+if(!snap.exists()){
+await setDoc(ref,{hearts:0});
+}
+
+}
+
+iniciar();
+
 
 // escuchar cambios en tiempo real
+
 onSnapshot(ref,(snap)=>{
 
 if(snap.exists()){
@@ -183,6 +194,7 @@ actualizarUI();
 
 });
 
+
 // ================= UI =================
 
 function actualizarUI(){
@@ -190,50 +202,76 @@ function actualizarUI(){
 let porcentaje=(progreso/20)*100;
 
 document.getElementById("barraProgreso").style.width=porcentaje+"%";
+
 document.getElementById("carro").style.transform="translateX("+porcentaje*2+"px)";
+
 document.getElementById("corazones").innerText="❤️".repeat(progreso);
 
+
 if(progreso>=20){
+
 document.getElementById("letraFinal").innerHTML='<div class="letra">T</div>';
+
 pregunta.innerText="¡La letra secreta fue descubierta!";
+
 respuestas.innerHTML="";
+
 return;
+
 }
 
+
 if(respondio){
+
 pregunta.innerText="❤️ Gracias por participar";
+
 respuestas.innerHTML="Ahora espera a los demás.";
+
 return;
+
 }
 
 mostrarPregunta();
+
 }
 
-// ================= PREGUNTAS =================
+
+// ================= PREGUNTA =================
 
 function mostrarPregunta(){
 
 let q=Math.floor(Math.random()*preguntas.length);
+
 let p=preguntas[q];
 
 pregunta.innerText=p.p;
+
 respuestas.innerHTML="";
+
 
 p.r.forEach((resp,i)=>{
 
 let b=document.createElement("button");
+
 b.innerText=resp;
+
 
 b.onclick=async()=>{
 
 localStorage.setItem("respondio",true);
 
 if(i===p.c){
-await updateDoc(ref,{hearts:increment(1)});
+
+await updateDoc(ref,{
+hearts:increment(1)
+});
+
 }
 
 actualizarUI();
+
 };
+
 
 respuestas.appendChild(b);
 
@@ -241,4 +279,7 @@ respuestas.appendChild(b);
 
 }
 
- </script> 
+</script>
+
+</body>
+</html>
