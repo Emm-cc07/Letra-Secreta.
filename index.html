@@ -95,8 +95,8 @@ to{transform:scale(1.2)}
 <div id="letraFinal"></div>
 
 </div>
-  
-<script type="module">
+
+ <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import {
@@ -105,7 +105,8 @@ import {
   onSnapshot,
   setDoc,
   updateDoc,
-  increment
+  increment,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -116,6 +117,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// referencia correcta
+const ref = doc(db,"game","progress");
 
 // ================= PREGUNTAS =================
 
@@ -135,7 +139,7 @@ const preguntas=[
 {p:"¿Cuántos continentes hay?",r:["5","6","7","8"],c:2},
 {p:"¿Qué metal es líquido a temperatura ambiente?",r:["Mercurio","Hierro","Cobre","Aluminio"],c:0},
 {p:"¿Qué órgano bombea la sangre?",r:["Pulmón","Cerebro","Corazón","Hígado"],c:2},
-{p:"¿Qué animal es el más grande del planeta?",r:["Elefante","Ballena azul","Tiburón","Giraffa"],c:1},
+{p:"¿Qué animal es el más grande del planeta?",r:["Elefante","Ballena azul","Tiburón","Jirafa"],c:1},
 {p:"¿Qué planeta es conocido como planeta rojo?",r:["Marte","Venus","Mercurio","Urano"],c:0},
 {p:"¿Cuál es el idioma más hablado del mundo?",r:["Inglés","Español","Mandarín","Hindi"],c:2},
 {p:"¿Qué científico formuló las leyes del movimiento?",r:["Newton","Darwin","Galileo","Curie"],c:0},
@@ -152,19 +156,28 @@ let progreso = 0;
 const pregunta=document.getElementById("pregunta");
 const respuestas=document.getElementById("respuestas");
 
-const ref = doc(db,"progreso","estado");
+// asegurarse de que el documento exista
+const init = async ()=>{
+  const snap = await getDoc(ref);
+  if(!snap.exists()){
+    await setDoc(ref,{hearts:0});
+  }
+};
 
+init();
+
+// escuchar cambios en tiempo real
 onSnapshot(ref,(snap)=>{
 
 if(snap.exists()){
-progreso=snap.data().corazones;
-}else{
-setDoc(ref,{corazones:0});
-progreso=0;
+progreso=snap.data().hearts;
 }
 
 actualizarUI();
+
 });
+
+// ================= UI =================
 
 function actualizarUI(){
 
@@ -190,6 +203,8 @@ return;
 mostrarPregunta();
 }
 
+// ================= PREGUNTAS =================
+
 function mostrarPregunta(){
 
 let q=Math.floor(Math.random()*preguntas.length);
@@ -208,17 +223,16 @@ b.onclick=async()=>{
 localStorage.setItem("respondio",true);
 
 if(i===p.c){
-await updateDoc(ref,{corazones:increment(1)});
+await updateDoc(ref,{hearts:increment(1)});
 }
 
 actualizarUI();
 };
 
 respuestas.appendChild(b);
+
 });
+
 }
 
- </script>
-  
-</body>
-</html>
+ </script> 
