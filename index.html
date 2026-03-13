@@ -160,131 +160,92 @@ const preguntas=[
 
 // ================= LÓGICA =================
 
-let respondio = localStorage.getItem("respondio");
+let respondio = localStorage.getItem("respondio") === "true";
 let progreso = 0;
 
 const pregunta=document.getElementById("pregunta");
 const respuestas=document.getElementById("respuestas");
 
-
-// crear documento si no existe
-
-async function iniciar(){
-
-const snap = await getDoc(ref);
-
-if(!snap.exists()){
-await setDoc(ref,{hearts:0});
-}
-
-}
-
-iniciar();
-
-
-// escuchar cambios en tiempo real
-
+// escuchar progreso global
 onSnapshot(ref,(snap)=>{
 
 if(snap.exists()){
-progreso=snap.data().hearts;
+progreso = snap.data().hearts;
 }
 
 actualizarUI();
 
 });
-
-
-// ================= UI =================
 
 function actualizarUI(){
 
 let porcentaje=(progreso/20)*100;
 
 document.getElementById("barraProgreso").style.width=porcentaje+"%";
-
 document.getElementById("carro").style.transform="translateX("+porcentaje*2+"px)";
-
 document.getElementById("corazones").innerText="❤️".repeat(progreso);
 
-
+// si ya se descubrió la letra
 if(progreso>=20){
 
 document.getElementById("letraFinal").innerHTML='<div class="letra">T</div>';
-
 pregunta.innerText="¡La letra secreta fue descubierta!";
-
 respuestas.innerHTML="";
-
 return;
 
 }
 
-
+// si ya respondió
 if(respondio){
 
 pregunta.innerText="❤️ Gracias por participar";
-
-respuestas.innerHTML="Ahora espera a los demás.";
-
+respuestas.innerHTML="Es turno del siguiente jugador.";
 return;
 
 }
 
+// si NO ha respondido, mostrar pregunta
+if(respuestas.innerHTML===""){
 mostrarPregunta();
-
 }
 
-
-// ================= PREGUNTA =================
+}
 
 function mostrarPregunta(){
 
 let q=Math.floor(Math.random()*preguntas.length);
-
 let p=preguntas[q];
 
 pregunta.innerText=p.p;
-
 respuestas.innerHTML="";
-
 
 p.r.forEach((resp,i)=>{
 
 let b=document.createElement("button");
-
 b.innerText=resp;
 
 b.onclick=async()=>{
 
-// marcar que ya respondió
-localStorage.setItem("respondio",true);
 respondio = true;
+localStorage.setItem("respondio","true");
 
-// si acertó suma progreso
 if(i===p.c){
 
-await updateDoc(ref,{
-hearts:increment(1)
-});
-
-pregunta.innerText="✅ ¡Respuesta correcta!";
-respuestas.innerHTML="Es turno del siguiente jugador.";
+pregunta.innerText="✅ ¡Correcto!";
+await updateDoc(ref,{hearts:increment(1)});
 
 }else{
 
-pregunta.innerText="❌ Respuesta incorrecta.";
-respuestas.innerHTML="Es turno del siguiente jugador.";
+pregunta.innerText="❌ Incorrecto";
 
 }
 
-// bloquear más preguntas
-setTimeout(()=>{
-actualizarUI();
+respuestas.innerHTML="Es turno del siguiente jugador.";
 
 };
 
-</script>
+respuestas.appendChild(b);
 
-</body>
-</html>
+});
+
+}
