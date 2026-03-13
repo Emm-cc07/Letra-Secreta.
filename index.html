@@ -172,14 +172,19 @@ const respuestas=document.getElementById("respuestas")
 
 db.collection("progreso").doc("estado").onSnapshot((doc)=>{
 
+if(doc.exists){
 progreso = doc.data().corazones
+}else{
+db.collection("progreso").doc("estado").set({corazones:0})
+progreso = 0
+}
 
 actualizarUI()
 
 })
   
 function actualizarUI(){
-
+{
 let porcentaje=(progreso/20)*100
 document.getElementById("barraProgreso").style.width=porcentaje+"%"
 
