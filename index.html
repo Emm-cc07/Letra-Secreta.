@@ -255,29 +255,35 @@ let b=document.createElement("button");
 
 b.innerText=resp;
 
-
 b.onclick=async()=>{
 
+// marcar que ya respondió
 localStorage.setItem("respondio",true);
+respondio = true;
 
+// si acertó suma progreso
 if(i===p.c){
 
 await updateDoc(ref,{
 hearts:increment(1)
 });
 
+pregunta.innerText="✅ ¡Respuesta correcta!";
+respuestas.innerHTML="Es turno del siguiente jugador.";
+
+}else{
+
+pregunta.innerText="❌ Respuesta incorrecta.";
+respuestas.innerHTML="Es turno del siguiente jugador.";
+
 }
 
+// bloquear más preguntas
+setTimeout(()=>{
 actualizarUI();
+},500);
 
 };
-
-
-respuestas.appendChild(b);
-
-});
-
-}
 
 </script>
 
