@@ -118,139 +118,107 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ================= PREGUNTAS =================
-  
-const preguntas = [
+
+const preguntas=[
 
 {p:"¿Quién escribió La Odisea?",r:["Homero","Platón","Aristóteles","Sócrates"],c:0},
-
 {p:"¿Cuál es el planeta más grande del sistema solar?",r:["Marte","Júpiter","Saturno","Neptuno"],c:1},
-
 {p:"¿Qué elemento tiene el símbolo O?",r:["Oro","Osmio","Oxígeno","Plata"],c:2},
-
 {p:"¿Quién pintó la Mona Lisa?",r:["Van Gogh","Da Vinci","Picasso","Rembrandt"],c:1},
-
 {p:"¿Cuántos huesos tiene el cuerpo humano adulto?",r:["206","210","180","150"],c:0},
-
 {p:"¿Qué país tiene forma de bota?",r:["España","Italia","Grecia","Portugal"],c:1},
-
 {p:"¿Cuál es el océano más grande?",r:["Atlántico","Índico","Pacífico","Ártico"],c:2},
-
 {p:"¿Qué gas respiramos principalmente?",r:["Nitrógeno","Oxígeno","CO2","Helio"],c:1},
-
 {p:"¿Quién desarrolló la teoría de la relatividad?",r:["Newton","Einstein","Tesla","Bohr"],c:1},
-
 {p:"¿Cuál es el río más largo del mundo?",r:["Amazonas","Nilo","Yangtsé","Misisipi"],c:0},
-
 {p:"¿Qué instrumento mide la presión atmosférica?",r:["Barómetro","Termómetro","Higrómetro","Altímetro"],c:0},
-
 {p:"¿Cuántos continentes hay?",r:["5","6","7","8"],c:2},
-
 {p:"¿Qué metal es líquido a temperatura ambiente?",r:["Mercurio","Hierro","Cobre","Aluminio"],c:0},
-
 {p:"¿Qué órgano bombea la sangre?",r:["Pulmón","Cerebro","Corazón","Hígado"],c:2},
-
 {p:"¿Qué animal es el más grande del planeta?",r:["Elefante","Ballena azul","Tiburón","Giraffa"],c:1},
-
 {p:"¿Qué planeta es conocido como planeta rojo?",r:["Marte","Venus","Mercurio","Urano"],c:0},
-
 {p:"¿Cuál es el idioma más hablado del mundo?",r:["Inglés","Español","Mandarín","Hindi"],c:2},
-
 {p:"¿Qué científico formuló las leyes del movimiento?",r:["Newton","Darwin","Galileo","Curie"],c:0},
-
 {p:"¿Qué órgano produce insulina?",r:["Hígado","Páncreas","Riñón","Estómago"],c:1},
-
 {p:"¿Cuál es el país más grande del mundo?",r:["China","EEUU","Rusia","Canadá"],c:2}
 
-]
+];
 
-let respondio=localStorage.getItem("respondio")
-let progreso = 0
-  
-const pregunta=document.getElementById("pregunta")
-const respuestas=document.getElementById("respuestas")
+// ================= LÓGICA =================
 
-db.collection("progreso").doc("estado").onSnapshot((doc)=>{
+let respondio = localStorage.getItem("respondio");
+let progreso = 0;
 
-if(doc.exists){
-progreso = doc.data().corazones
+const pregunta=document.getElementById("pregunta");
+const respuestas=document.getElementById("respuestas");
+
+const ref = doc(db,"progreso","estado");
+
+onSnapshot(ref,(snap)=>{
+
+if(snap.exists()){
+progreso=snap.data().corazones;
 }else{
-db.collection("progreso").doc("estado").set({corazones:0})
-progreso = 0
+setDoc(ref,{corazones:0});
+progreso=0;
 }
 
-actualizarUI()
+actualizarUI();
+});
 
-})
-  
 function actualizarUI(){
-{
-let porcentaje=(progreso/20)*100
-document.getElementById("barraProgreso").style.width=porcentaje+"%"
 
-document.getElementById("carro").style.transform="translateX("+porcentaje*2+"px)"
+let porcentaje=(progreso/20)*100;
 
-document.getElementById("corazones").innerText="❤️".repeat(progreso)
+document.getElementById("barraProgreso").style.width=porcentaje+"%";
+document.getElementById("carro").style.transform="translateX("+porcentaje*2+"px)";
+document.getElementById("corazones").innerText="❤️".repeat(progreso);
 
 if(progreso>=20){
-
-document.getElementById("letraFinal").innerHTML='<div class="letra">T</div>'
-
-pregunta.innerText="¡La letra secreta fue descubierta!"
-
-respuestas.innerHTML=""
-
+document.getElementById("letraFinal").innerHTML='<div class="letra">T</div>';
+pregunta.innerText="¡La letra secreta fue descubierta!";
+respuestas.innerHTML="";
+return;
 }
-
-}
-
-actualizarUI()
 
 if(respondio){
+pregunta.innerText="❤️ Gracias por participar";
+respuestas.innerHTML="Ahora espera a los demás.";
+return;
+}
 
-pregunta.innerText="❤️ Gracias por participar"
-respuestas.innerHTML="Ahora espera a que los demás respondan."
+mostrarPregunta();
+}
 
-}else{
+function mostrarPregunta(){
 
-let q=Math.floor(Math.random()*preguntas.length)
-let p=preguntas[q]
+let q=Math.floor(Math.random()*preguntas.length);
+let p=preguntas[q];
 
-pregunta.innerText=p.p
+pregunta.innerText=p.p;
+respuestas.innerHTML="";
 
 p.r.forEach((resp,i)=>{
 
-let b=document.createElement("button")
-b.innerText=resp
+let b=document.createElement("button");
+b.innerText=resp;
 
-b.onclick=()=>{
+b.onclick=async()=>{
 
-localStorage.setItem("respondio",true)
+localStorage.setItem("respondio",true);
 
 if(i===p.c){
-
-db.collection("progreso").doc("estado").update({
-corazones: firebase.firestore.FieldValue.increment(1)
-})
-
-alert("¡Respuesta correcta! ❤️")
-
-}else{
-
-alert("Respuesta incorrecta 😅")
-
+await updateDoc(ref,{corazones:increment(1)});
 }
 
-location.reload()
+actualizarUI();
+};
 
+respuestas.appendChild(b);
+});
 }
 
-respuestas.appendChild(b)
-
-})
-
-}
-
-</script>
-
+ </script>
+  
 </body>
 </html>
